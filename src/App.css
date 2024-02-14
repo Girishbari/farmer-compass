@@ -3,14 +3,17 @@
   margin: 0;
   padding: 0;
 }
-#root{
+#root {
   height: 100%;
   width: 100vw;
-  background: white;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px); /* Light gray grid pattern */
+  background-size: 20px 20px;
+  background-color: #ffffff; /* White background */
 }
-.__main_container{
+.__main_container {
   height: 100%;
-  width: 100%; 
+  width: 100%;
   padding: 2rem 2rem;
 }
 .leaflet-container {
@@ -18,7 +21,7 @@
   border-radius: 1rem;
   height: 80vh;
   width: 100%;
-  margin:0 auto;
+  margin: 0 auto;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border: 2px solid rgb(222, 221, 221);
 }
@@ -27,7 +30,7 @@
   color: rgb(87, 85, 85);
   font-weight: 500;
 } */
-.leaflet-container .input__div{
+.leaflet-container .input__div {
   position: absolute;
   z-index: 999;
   top: 10px;
@@ -47,23 +50,20 @@
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border: none;
   outline: none;
-
 }
 .input__div input:hover {
   pointer-events: none;
 }
 .input__div input::placeholder {
   color: gray;
-
-
 }
-.ul__{
+.ul__ {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-.__gpt_suggestion_popup{
+.__gpt_suggestion_popup {
   position: absolute;
   right: 2%;
   top: 53%;
@@ -72,7 +72,7 @@
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border-radius: 12px;
   height: 70%;
-  width:100%;
+  width: 100%;
   color: black;
   min-width: 300px;
   max-width: 360px;
@@ -83,7 +83,7 @@
   z-index: 999;
   animation: open 0.5s ease;
 }
-.__gpt_suggestion_popup_close{
+.__gpt_suggestion_popup_close {
   position: absolute;
   right: 2%;
   top: 53%;
@@ -92,7 +92,7 @@
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border-radius: 12px;
   height: 70%;
-  width:100%;
+  width: 100%;
   color: black;
   min-width: 300px;
   max-width: 360px;
@@ -103,18 +103,20 @@
   z-index: 999;
   animation: close 0.5s ease;
 }
-.__gpt_suggestion_popup p{
+.__gpt_suggestion_popup p {
   text-indent: 24px;
 }
-.__gpt_heading{
+.__gpt_heading {
   font-size: x-large;
 }
-.__content_container{
-color: black;
-padding: 2rem;
-height: 100%;
+.__content_container {
+  margin-top: 2em;
+  color: black;
+  padding: 2rem;
+  width: 100%;
+  background-color: whitesmoke;
 }
-.btn_con{
+.btn_con {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -130,14 +132,14 @@ height: 100%;
   }
 }
 @media screen and (max-width: 760px) {
-  .__main_container{
+  .__main_container {
     height: 100%;
-    width: 100%; 
+    width: 100%;
     padding: 2rem 0.2rem;
   }
 }
 @media screen and (max-width: 450px) {
-  .btn_con{
+  .btn_con {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -145,10 +147,18 @@ height: 100%;
   }
 }
 @keyframes open {
-  from {right: -200px;}
-  to {right: 2%;}
+  from {
+    right: -200px;
   }
-  @keyframes close {
-    from {right: -2%;}
-    to {right: -40%;}
-    }
+  to {
+    right: 2%;
+  }
+}
+@keyframes close {
+  from {
+    right: -2%;
+  }
+  to {
+    right: -40%;
+  }
+}
