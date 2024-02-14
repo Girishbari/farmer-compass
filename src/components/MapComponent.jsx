@@ -1,10 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import '../App.css'
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, TileLayer, Marker, Popup, useMap, } from 'react-leaflet'
-import { OpenStreetMapProvider, GeoSearchControl } from 'leaflet-geosearch'
 import axios from 'axios'
-import { Icon } from 'leaflet'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import OpenAI from 'openai'
 
@@ -28,18 +26,21 @@ const openAI = new OpenAI({
 
 function MapComponent() {
   const [position, setPosition] = useState(center)
+  const [open, setOpen] = useState(false)
+
   const [data, setData] = useState(null);
   const [currentLocData, setCurrentLocData] = useState();
   const [location, setLocation] = useState([])
   const [centerPos, setCenterPos] = useState(true);
+  const popup = useRef(null);
 
   useEffect(() => {
-
-    if (currentLocData !== undefined) {
+    if (currentLocData?.gptResponse !== undefined) {
       fetchGPTSuggestion();
+      return
     }
+    return
   }, [currentLocData])
-
   const fetchGPTSuggestion = async () => {
     try {
       const prompt = `${currentLocData} is the current climate of place ${currentLocData.lat, currentLocData.lng}, please give some suggestion for farming of given crop`
@@ -52,6 +53,8 @@ function MapComponent() {
         ...currentLocData,
         gptSuggestion: gptResponse.choices[0].message.content
       })
+      setOpen(true)
+      return
     } catch (error) {
       console.log(error);
     }
@@ -76,11 +79,11 @@ function MapComponent() {
       console.log(error)
     }
   }
-
+console.log('curr',currentLocData)
   return (
     <>
       <main className='__main_container'>
-        <MapContainer center={center} zoom={5}>
+        <MapContainer center={center} zoom={5} scrollWheelZoom={false}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=YwJfI3tmNFKiooMs2u4H"
@@ -88,21 +91,39 @@ function MapComponent() {
 
           {location && <LocationMarker coordinates={location} center={centerPos} setCenter={setCenterPos} currentData={currentLocData} setCurrentData={setCurrentLocData} />
           }
-        </MapContainer>
-        <p className='__paragrapH'>
-          <span>Lat: {position.lat}</span>
-          <br />
-          <span>Lng: {position.lng}</span>
-        </p>
-        <input type="text" placeholder='enter your query here'
+          <div className='input__div'>
+          <input type="text" placeholder='enter your query here'
           onChange={(e) =>
             setData(e.target.value)
           } />
-        <button onClick={handleClick}>Submit</button>
+          <div className='btn_con'>
+            <button className='submit_button'  onClick={handleClick}>Submit</button>
         <button onClick={() => setCenterPos(true)}> reset</button>
-
+          </div>
+        </div>
+        
+        {
+          open && (
+          <div ref={popup} className={`__gpt_suggestion_popup ${open ? '__gpt_suggestion_popup' : '__gpt_suggestion_popup_close' }`}>
+            <h3 className='__gpt_heading'>Details</h3>
+            <p>
+              {
+              currentLocData?.gptSuggestion
+              }
+            </p>
+      </div>
+        )
+      }
+        </MapContainer>
+        <div className='__content_container'>
+        <h3 className='__gpt_heading'>Details</h3>
+            <p>
+              {
+              currentLocData?.gptSuggestion ? currentLocData.gptSuggestion: 'no response' 
+              }
+            </p>
+        </div>
       </main>
-
     </>
   )
 }
@@ -119,6 +140,7 @@ function LocationMarker({ coordinates, center, setCenter, currentData, setCurren
 
   const flyToLoc = useCallback(
     (loc) => async () => {
+
       setCenter(false);
       if (loc) {
         map.flyTo(loc, 12, {
@@ -164,9 +186,9 @@ function LocationMarker({ coordinates, center, setCenter, currentData, setCurren
           position={loc && [...loc]}
           eventHandlers={{ click: flyToLoc(loc) }}
         >
-          <Popup>
+          <Popup >
             {currentData ? (
-              <ul>
+              <ul className='ul__'>
                 <li> <h4>Last Updated at: </h4> {new Date(currentData.updatedAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
@@ -179,7 +201,7 @@ function LocationMarker({ coordinates, center, setCenter, currentData, setCurren
                 <li><h4>Humidity: </h4> {currentData.humidity}</li>
                 <li><h4>WindSpeed: </h4> {currentData.windSpeed}</li>
                 <li><h4>Summary: </h4> {currentData.summary}</li>
-                <li><h4>gptSuggestion: </h4> {currentData.gptSuggestion}</li>
+                {/* <li><h4>gptSuggestion: </h4> {currentData.gptSuggestion}</li> */}
               </ul>
             ) : "not available"}
           </Popup>
