@@ -1,7 +1,9 @@
 import { Marker, Popup, useMap } from 'react-leaflet'
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import L from "leaflet"
 import axios from 'axios';
 import OpenAI from 'openai'
+import image from "/wheat.png"
 
 const ambeeAPI = "9f053bd16c211d191b63df34dc04ee059214824e7535facf391c36a86bc0f38b"
 const openAI = new OpenAI({
@@ -9,17 +11,23 @@ const openAI = new OpenAI({
   dangerouslyAllowBrowser: true
 })
 
+const myIcon = L.icon({
+  iconUrl: image,
+  iconSize: [25, 41],
+});
+
 export default function LocationMarker({ currentData, setCurrentData }) {
   const map = useMap();
 
   const [center, setCenter] = useState(true);
   const [location, setLocation] = useState([])
   const [data, setData] = useState(null);
-  const [crop, setCrop] = useState('');
+  const crop = useRef();
 
 
   useEffect(() => {
     center ? flyToCenter() : "";
+    console.log(crop)
   }, [location, center])
 
 
@@ -30,10 +38,11 @@ export default function LocationMarker({ currentData, setCurrentData }) {
       const resp = await openAI.chat.completions.create({
         messages: [{ role: 'system', content: prompt }, { role: 'user', content: data }],
         model: 'gpt-3.5-turbo-0125',
+        temperature: 0,
         response_format: { type: "json_object" },
 
       })
-      setCrop(data)
+      crop.current = data
       const generatedResponse = JSON.parse(resp.choices[0].message.content);
       setLocation(generatedResponse.coordinates)
     } catch (error) {
@@ -71,10 +80,11 @@ export default function LocationMarker({ currentData, setCurrentData }) {
   );
 
   const fetchGPTSuggestion = async (locWeather) => {
+    console.log(crop)
     try {
       const prompt = `${locWeather} is the current climate of place ${locWeather.lat, locWeather.lng}, please give some suggestion for farming of given crop only`
       const gptResponse = await openAI.chat.completions.create({
-        messages: [{ role: 'system', content: prompt }, { role: 'user', content: crop }],
+        messages: [{ role: 'system', content: prompt }, { role: 'user', content: crop.current }],
         model: 'gpt-3.5-turbo-0125',
         temperature: 0.3
       })
@@ -102,13 +112,16 @@ export default function LocationMarker({ currentData, setCurrentData }) {
   }
   return (
     <>
+      <img src={image} alt="My Image" />
+
       {location?.map((loc, idx) => (
         <Marker
           key={idx}
           position={loc && [...loc]}
           eventHandlers={{ click: flyToLoc(loc) }}
+          icon={myIcon}
         >
-          <Popup >
+          <Popup>
             {currentData ? (
               <ul className='ul__'>
                 <li> <h4>Last Updated at: </h4> {new Date(currentData.updatedAt).toLocaleDateString('en-US', {

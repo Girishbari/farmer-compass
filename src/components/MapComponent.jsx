@@ -9,12 +9,6 @@ import ReactMarkdown from 'react-markdown'
 import OpenAI from 'openai'
 
 
-
-
-
-// const apiKey = "AIzaSyBYeAX0KJ03Rv-v0G28LPbU8HnWFK5BP6k"
-// const apiKey = "sk-lHkNqHygVEjeUor8eUwaT3BlbkFJYeqzl8OZVx3obFDLRkI"
-
 const center = {
   lat: 31.1048,
   lng: 77.1734,
