@@ -20,7 +20,6 @@ export default function LocationMarker({ currentData, setCurrentData }) {
 
   useEffect(() => {
     center ? flyToCenter() : "";
-    console.log(crop);
   }, [location, center])
 
 
@@ -36,7 +35,6 @@ export default function LocationMarker({ currentData, setCurrentData }) {
       })
       setCrop(data)
       const generatedResponse = JSON.parse(resp.choices[0].message.content);
-      console.log(generatedResponse)
       setLocation(generatedResponse.coordinates)
     } catch (error) {
       console.log(error)
@@ -60,8 +58,6 @@ export default function LocationMarker({ currentData, setCurrentData }) {
             }
           })
           if (ambeeResp.data.message == 'success') {
-            console.log(ambeeResp.data.data)
-            console.log(data);
             setCurrentData(ambeeResp.data.data)
             fetchGPTSuggestion(ambeeResp.data.data)
           }
@@ -75,7 +71,6 @@ export default function LocationMarker({ currentData, setCurrentData }) {
   );
 
   const fetchGPTSuggestion = async (locWeather) => {
-    console.log(crop);
     try {
       const prompt = `${locWeather} is the current climate of place ${locWeather.lat, locWeather.lng}, please give some suggestion for farming of given crop only`
       const gptResponse = await openAI.chat.completions.create({
@@ -83,7 +78,6 @@ export default function LocationMarker({ currentData, setCurrentData }) {
         model: 'gpt-3.5-turbo-0125',
         temperature: 0.3
       })
-      console.log(gptResponse.choices[0].message.content)
       setCurrentData((prev) => {
         return {
           ...prev,
