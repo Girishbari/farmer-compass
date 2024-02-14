@@ -9,6 +9,8 @@ Many farmers encounter challenges in optimizing their crop cultivation due to un
 
 https://github.com/Girishbari/farmer-compass/assets/38005544/d435d2f1-0896-4fc6-b372-05172453880c
 
+# Live Link : [farmer-compass.vercel.app](https://farmer-compass.vercel.app/)
+
 # Solution Described
 
 By utilizing Generative AI, we are providing a solution that addresses the challenges farmers face in finding suitable locations for specific crops based on climate conditions. This can be particularly beneficial in optimizing agricultural practices, increasing crop yield, and promoting sustainable farming methods.
