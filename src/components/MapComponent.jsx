@@ -15,7 +15,7 @@ const center = {
 }
 
 const openAI = new OpenAI({
-  apiKey: import.meta.env.VITE_openAIkey,
+  apiKey: '1234',
   dangerouslyAllowBrowser: true
 })
 
